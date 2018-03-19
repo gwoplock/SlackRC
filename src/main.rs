@@ -19,6 +19,12 @@ fn main() {
     println!("your Slack token is \"{}\"", token);
 
     //rtm.connect
+
+    let url = format!("https://slack.com/api/rtm.connect?token={}", token);
+    println!("rtm connect URL is: \"{}\"", url);
+
+    
+
     //read res from ^
     //open webhook url from res
     //print messages as the come
