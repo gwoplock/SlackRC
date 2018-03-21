@@ -1,6 +1,9 @@
 #include <iostream>
 
 int main(){
-    std::cout << "hello world" << std::endl;
-    return 0;
+    //read key from file
+    //rtm.connect
+    //read res from ^
+    //open webhook url from res
+    //print messages as the come
 }
