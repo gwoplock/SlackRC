@@ -28,7 +28,8 @@ fn main() {
 
     //rtm.connect
     //build url
-    let url = format!("http://slack.com/api/rtm.connect?token={}", token);
+    //let url = format!("http://slack.com/api/rtm.connect?token={}", token);
+    let url = "http://httpbin.org/ip";
     println!("rtm connect URL is: \"{}\"", url);
 
 
@@ -54,7 +55,7 @@ fn main() {
         println!("Response: {}", res.status());
 
         res.body().for_each(|chunk| {
-        io::stdout()
+            io::stdout()
             .write_all(&chunk)
             .map_err(From::from)
         })
