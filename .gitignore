@@ -12,4 +12,8 @@ Cargo.lock
 /target/
 **/*.rs.bk
 
+**/SlackRC
+
 /SlackToken
+
+**/*.o
