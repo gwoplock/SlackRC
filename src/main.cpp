@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <curl/curl.h>
+#include <boost/beast.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 //NOTE: copied from "https://curl.haxx.se/libcurl/c/getinmemory.html"
 struct MemoryStruct
@@ -86,6 +88,13 @@ int main()
     std::cout << "size receved: " << chunk.size << std::endl;
     std::cout << "got: " << chunk.memory <<std::endl;
     //read res from ^
+    std::stringstream jsonSS;
+    jsonSS << chunk.memory;
+
+    boost::property_tree::ptree pt;
+  boost::property_tree::read_json(jsonSS, pt);
+  std::cout << "url is" << pt.get<std::string>("url") << std::endl;
+
     //open webhook url from res
     //print messages as the come
 }
