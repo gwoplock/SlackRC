@@ -16,7 +16,7 @@ FIND_PACKAGE( Boost 1.66.0 COMPONENTS system REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 
-add_executable(SlackRC src/test.cpp src/root_certs.h)
+add_executable(SlackRC src/main.cpp src/root_certs.h)
 
 #curl linking
 include_directories(${CURL_INCLUDE_DIR})

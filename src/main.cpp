@@ -1,3 +1,4 @@
+#include "root_certs.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -58,7 +59,7 @@ int main()
 
 		std::ifstream keyFile;
 		//todo take file from cmd line
-		keyFile.open("../SlackToken");
+		keyFile.open("SlackToken");
 		if (!keyFile.is_open()) {
 			std::cerr << "error opening file" << std::endl;
 			exit(1);
@@ -122,49 +123,51 @@ int main()
 
 		//open webhook url from res
 
-		//NOTE: coppied from "http://www.boost.org/doc/libs/develop/libs/beast/doc/html/beast/quick_start.html"
-		// The io_context is required for all I/O
+		//NOTE: taken from http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp
+
+        	// The io_context is required for all I/O
 		boost::asio::io_context ioc;
+
+		// The SSL context is required, and holds certificates
+		ssl::context ctx{ssl::context::sslv23_client};
+
+		// This holds the root certificate used for verification
+		load_root_certificates(ctx);
 
 		// These objects perform our I/O
 		tcp::resolver resolver{ioc};
-		websocket::stream <tcp::socket> ws{ioc};
-		std::cout << "host is: " << webhookURI.host() << std::endl;
+		websocket::stream<ssl::stream<tcp::socket>> ws{ioc, ctx};
+
+		// Look up the domain name
 		auto const results = resolver.resolve(webhookURI.host(), "443");
 
-		std::string fullPath = webhookURI.path() /*+ "?" + webhookURI.query()*/;
-		std::cout << "full path is: " << fullPath << std::endl;
-		boost::beast::multi_buffer buffer;
 		// Make the connection on the IP address we get from a lookup
-		boost::asio::connect(ws.next_layer(), results.begin(), results.end());
+		boost::asio::connect(ws.next_layer().next_layer(), results.begin(), results.end());
 
-		//NOTE: taken from http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp
 		// Perform the SSL handshake
 		ws.next_layer().handshake(ssl::stream_base::client);
-		//END COPIED CODE
 
 		// Perform the websocket handshake
+        std::string fullPath = webhookURI.path() + "?" + webhookURI.query();
+		std::cout << "full path is: " << fullPath << std::endl;
 		ws.handshake(webhookURI.host(), fullPath);
-		std::cout << "handshake done" << std::endl;
-		ws.write(boost::asio::buffer(std::string("{\n"
-				                                         "    \"id\": 1,\n"
-				                                         "    \"type\": \"ping\",\n"
-				                                         "    \"time\": 1403299273342\n"
-				                                         "}")));
+
+		// Send the message
+		//ws.write(boost::asio::buffer(std::string(text)));
+
+		// This buffer will hold the incoming message
+		boost::beast::multi_buffer b;
 
 		// Read a message into our buffer
-		while (true) {
-			ws.read(buffer);
-			std::cout << boost::beast::buffers(buffer.data()) << std::endl;
-		}
+		ws.read(b);
+
 		// Close the WebSocket connection
 		ws.close(websocket::close_code::normal);
 
 		// If we get here then the connection is closed gracefully
 
 		// The buffers() function helps print a ConstBufferSequence
-		std::cout << boost::beast::buffers(buffer.data()) << std::endl;
-
+		std::cout << boost::beast::buffers(b.data()) << std::endl;
 		//END COPIED CODE
 	} catch (std::exception const& e)
 	{
