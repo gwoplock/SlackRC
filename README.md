@@ -1,6 +1,6 @@
 # SlackRC
 
-A replacement for the removed Slack IRC gateway written in rust.
+A replacement for the removed Slack IRC gateway written in ~rust~ c++.
 
 ## Dependencies
 * Boost

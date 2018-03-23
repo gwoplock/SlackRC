@@ -145,8 +145,10 @@ int main()
     boost::beast::multi_buffer buffer;
 
     // Read a message into our buffer
-    ws.read(buffer);
-
+    while(true){
+        ws.read(buffer);
+        std::cout << boost::beast::buffers(buffer.data()) << std::endl;
+    }
     // Close the WebSocket connection
     ws.close(websocket::close_code::normal);
 
