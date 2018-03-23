@@ -130,9 +130,9 @@ int main()
     tcp::resolver resolver{ioc};
     websocket::stream<tcp::socket> ws{ioc};
     std::cout << "host is: " << webhookURI.host() << std::endl;
-    auto const results = resolver.resolve(webhookURI.host(), "80");
+    auto const results = resolver.resolve(webhookURI.host(), "443");
 
-    std::string fullPath = webhookURI.path() + "?" + webhookURI.query() + webhookURI.fragment();
+    std::string fullPath = webhookURI.path() + "?" + webhookURI.query();
     std::cout << "full path is: " << fullPath << std::endl;
 
     // Make the connection on the IP address we get from a lookup
