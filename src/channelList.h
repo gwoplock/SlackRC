@@ -3,11 +3,12 @@
 
 #include "webAPI.h"
 #include "channel.h"
+#include "user.h"
 
 #include <map>
 
 
 std::map<std::string,Channel> parseChannels(MemoryStruct channelList);
 
-void parseUsers(MemoryStruct userList);
+std::map<std::string, User>  parseUsers(MemoryStruct userList);
 #endif

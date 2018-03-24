@@ -23,8 +23,9 @@ std::map<std::string, Channel> parseChannels(MemoryStruct channelList)
     return toRet;
 }
 
-void parseUsers(MemoryStruct userList)
+std::map<std::string, User> parseUsers(MemoryStruct userList)
 {
+     std::map<std::string, User> toRet;
     std::stringstream userListSS;
     userListSS << userList.memory;
     boost::property_tree::ptree pt;
@@ -34,6 +35,8 @@ void parseUsers(MemoryStruct userList)
         for (auto &property : array_element.second)
         {
             std::cout << property.second.get<std::string>("profile.display_name_normalized") << std::endl;
+            toRet.emplace(property.second.get<std::string>("id"), User(property.second));
         }
     }
+    return toRet;
 }
