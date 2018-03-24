@@ -2,8 +2,11 @@
 #include "key.h"
 #include "webAPI.h"
 #include "root_certs.h"
+
 #include <boost/asio/connect.hpp>
+
 #include <boost/property_tree/json_parser.hpp>
+
 #include <boost/network/uri.hpp>
 #include <boost/network/uri/uri.ipp>
 
@@ -67,7 +70,7 @@ void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
         boost::property_tree::ptree profPT;
         boost::property_tree::read_json(profileSS, profPT);
         std::string channelID =  pt.get<std::string>("channel");
-        std::cout << channelID <<std::endl;
+        //std::cout << channelID <<std::endl;
         MemoryStruct channel = getChannel(key, channelID);
         std::stringstream channelSS;
         channelSS << channel.memory;

@@ -1,8 +1,11 @@
 //NOTE: copied from "https://curl.haxx.se/libcurl/c/getinmemory.html"
 
 #include "webAPI.h"
+
 #include <iostream>
+
 #include <boost/property_tree/json_parser.hpp>
+
 #include <curl/curl.h>
 
 
@@ -65,8 +68,8 @@ MemoryStruct rtmConnect(std::string key)
         std::cerr << "error running curl " << curl_easy_strerror(res) << std::endl;
         exit(1);
     }
-    std::cout << "size receved: " << chunk.size << std::endl;
-    std::cout << "got: " << chunk.memory << std::endl;
+    /*std::cout << "size receved: " << chunk.size << std::endl;
+    std::cout << "got: " << chunk.memory << std::endl;*/
     return chunk;
 }
 
@@ -117,8 +120,8 @@ MemoryStruct getProfile(std::string key, std::string userID){
         std::cerr << "error running curl " << curl_easy_strerror(res) << std::endl;
         exit(1);
     }
-    std::cout << "size receved: " << chunk.size << std::endl;
-    std::cout << "got: " << chunk.memory << std::endl;
+    /*std::cout << "size receved: " << chunk.size << std::endl;
+    std::cout << "got: " << chunk.memory << std::endl;*/
     return chunk;
 }
 
@@ -160,7 +163,7 @@ MemoryStruct getChannel(std::string key, std::string channelID){
         std::cerr << "error running curl " << curl_easy_strerror(res) << std::endl;
         exit(1);
     }
-    std::cout << "size receved: " << chunk.size << std::endl;
-    std::cout << "got: " << chunk.memory << std::endl;
+    /*std::cout << "size receved: " << chunk.size << std::endl;
+    std::cout << "got: " << chunk.memory << std::endl;*/
     return chunk;
 }

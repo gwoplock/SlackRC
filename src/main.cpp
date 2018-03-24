@@ -1,6 +1,6 @@
-#include "root_certs.h"
 #include "RTMStream.h"
 #include "webAPI.h"
+#include "key.h"
 
 #include <iostream>
 #include <fstream>
@@ -10,7 +10,6 @@
 std::string key;
 
 //NOTE: copied from "http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp"
-
 namespace websocket = boost::beast::websocket; // from <boost/beast/websocket.hpp>
 //END copied
 
