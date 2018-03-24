@@ -66,7 +66,15 @@ void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
         profileSS << profile.memory;
         boost::property_tree::ptree profPT;
         boost::property_tree::read_json(profileSS, profPT);
-        std::cout << "new message: " << text << " by: " << profPT.get<std::string>("profile.display_name_normalized") << " (" << userID << ")" << " in: " << pt.get<std::string>("channel") << std::endl;
+        std::string channelID =  pt.get<std::string>("channel");
+        std::cout << channelID <<std::endl;
+        MemoryStruct channel = getChannel(key, channelID);
+        std::stringstream channelSS;
+        channelSS << channel.memory;
+        boost::property_tree::ptree chanPT;
+         boost::property_tree::read_json(channelSS, chanPT);
+        std::cout << "new message: " << text << " by: " << profPT.get<std::string>("profile.display_name_normalized") << " (" << userID << ")" << " in: " 
+        << chanPT.get<std::string>("channel.name") << " (" <<  channelID << ")"  << std::endl;
     }
     if (pt.get<std::string>("type") == "hello")
     {
