@@ -5,8 +5,9 @@
 #include <boost/property_tree/json_parser.hpp>
 
 
-void parseChannels(MemoryStruct channelList)
+std::vector<Channel> parseChannels(MemoryStruct channelList)
 {
+    std::vector<Channel> toRet;
     std::stringstream channelListSS;
     channelListSS << channelList.memory;
     boost::property_tree::ptree pt;
@@ -17,6 +18,8 @@ void parseChannels(MemoryStruct channelList)
         for (auto &property : array_element.second)
         {
              std::cout << property.second.get<std::string>("name")<< std::endl;
+             toRet.push_back(Channel(property.second));
         }
     }
+    return toRet;
 }

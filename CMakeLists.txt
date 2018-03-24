@@ -16,7 +16,8 @@ FIND_PACKAGE( Boost 1.66.0 COMPONENTS system REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 
-add_executable(SlackRC src/main.cpp src/root_certs.h src/RTMStream.cpp src/RTMStream.h src/webAPI.h src/webAPI.cpp src/key.h src/channelList.cpp src/channelList.h)
+add_executable(SlackRC src/main.cpp src/root_certs.h src/RTMStream.cpp src/RTMStream.h src/webAPI.h src/webAPI.cpp src/key.h src/channelList.cpp src/channelList.h
+src/channel.h src/channel.cpp)
 
 #curl linking
 include_directories(${CURL_INCLUDE_DIR})

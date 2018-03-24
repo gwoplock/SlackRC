@@ -42,7 +42,7 @@ int main()
         //read key from file
         key = getKey();
 
-        parseChannels(getChannelList(key));
+        std::vector<Channel> channels = parseChannels(getChannelList(key));
 
         //rtm.connect
 
