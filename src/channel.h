@@ -9,7 +9,11 @@ class Channel {
     std::string _name;
     boost::property_tree::ptree _pt;
     public:
+        Channel(){}
         Channel(boost::property_tree::ptree pt);
+        std::string name(){
+            return _name;
+        }
 
 };
 

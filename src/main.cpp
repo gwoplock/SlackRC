@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string>
 
-
+std::map<std::string,Channel> channels;
 std::string key;
 
 //NOTE: copied from "http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp"
@@ -42,7 +42,7 @@ int main()
         //read key from file
         key = getKey();
 
-        std::vector<Channel> channels = parseChannels(getChannelList(key));
+        channels = parseChannels(getChannelList(key));
 
         //rtm.connect
 

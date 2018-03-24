@@ -4,8 +4,8 @@
 #include "webAPI.h"
 #include "channel.h"
 
-#include <vector>
+#include <map>
 
 
-std::vector<Channel> parseChannels(MemoryStruct channelList);
+std::map<std::string,Channel> parseChannels(MemoryStruct channelList);
 #endif
