@@ -8,4 +8,6 @@
 
 
 std::map<std::string,Channel> parseChannels(MemoryStruct channelList);
+
+void parseUsers(MemoryStruct userList);
 #endif

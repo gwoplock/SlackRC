@@ -107,3 +107,7 @@ MemoryStruct getChannelList(std::string key)
 
     return webAPIDo(url);
 }
+
+MemoryStruct getUserList(std::string key){
+    return webAPIDo("https://www.slack.com/api/users.list?token=" + key);
+}

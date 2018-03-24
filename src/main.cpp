@@ -41,7 +41,7 @@ int main()
 
         //read key from file
         key = getKey();
-
+         parseUsers(getUserList(key));
         channels = parseChannels(getChannelList(key));
 
         //rtm.connect

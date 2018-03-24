@@ -14,5 +14,5 @@ std::string getRTMURL(std::stringstream *jsonSS);
 MemoryStruct getProfile(std::string key, std::string userID);
 MemoryStruct getChannel(std::string key, std::string channelID);
 MemoryStruct getChannelList(std::string key);
-
+MemoryStruct getUserList(std::string key);
 #endif
