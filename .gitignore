@@ -17,7 +17,7 @@ Cargo.lock
 /SlackToken
 
 **/*.o
-
-/Build/**
-
-.vscode
+/Build/
+/.vscode/
+/.idea/
+**/cmake-build-debug/**
