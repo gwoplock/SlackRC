@@ -1,5 +1,6 @@
 #include "RTMStream.h"
-
+#include "key.h"
+#include "webAPI.h"
 #include "root_certs.h"
 #include <boost/asio/connect.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -58,7 +59,14 @@ void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
     boost::property_tree::read_json(message, pt);
     if (pt.get<std::string>("type") == "message")
     {
-        std::cout << "new message: " << pt.get<std::string>("text") << " by: " << pt.get<std::string>("user") << " in: " << pt.get<std::string>("channel") << std::endl;
+        std::string text = pt.get<std::string>("text");
+        std::string userID = pt.get<std::string>("user");
+        MemoryStruct profile = getProfile(key, userID);
+        std::stringstream profileSS;
+        profileSS << profile.memory;
+        boost::property_tree::ptree profPT;
+        boost::property_tree::read_json(profileSS, profPT);
+        std::cout << "new message: " << text << " by: " << profPT.get<std::string>("profile.display_name_normalized") << " (" << userID << ")" << " in: " << pt.get<std::string>("channel") << std::endl;
     }
     if (pt.get<std::string>("type") == "hello")
     {

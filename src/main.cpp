@@ -7,6 +7,8 @@
 #include <string>
 
 
+std::string key;
+
 //NOTE: copied from "http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp"
 
 namespace websocket = boost::beast::websocket; // from <boost/beast/websocket.hpp>
@@ -36,7 +38,7 @@ int main()
     try
     {
         //read key from file
-        std::string key = getKey();
+        key = getKey();
         //rtm.connect
 
         MemoryStruct chunk = rtmConnect(key);
