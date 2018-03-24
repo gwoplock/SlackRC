@@ -78,7 +78,7 @@ std::string getRTMURL(std::stringstream *jsonSS)
     boost::property_tree::ptree pt;
     boost::property_tree::read_json(*jsonSS, pt);
     std::string webhookURL = pt.get<std::string>("url");
-    std::cout << "url is: " << webhookURL << std::endl;
+    //std::cout << "url is: " << webhookURL << std::endl;
     return webhookURL;
 }
 
@@ -130,6 +130,47 @@ MemoryStruct getChannel(std::string key, std::string channelID){
     url = "https://www.slack.com/api/channels.info?token=" + key + "&channel=" + channelID;
 
 
+
+    CURL *curl = curl_easy_init();
+    if (!curl)
+    {
+        std::cerr << "error initing curl" << std::endl;
+        exit(1);
+    }
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+    //NOTE: copied from "https://curl.haxx.se/libcurl/c/getinmemory.html"
+
+    MemoryStruct chunk;
+
+    chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
+    chunk.size = 0;                   /* no data at this point */
+
+    /* send all data to this function  */
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+
+    /* we pass our 'chunk' struct to the callback function */
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+
+    /* some servers don't like requests that are made without a user-agent
+		 field, so we provide one */
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+    //END OF COPIED CODE
+
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK)
+    {
+        std::cerr << "error running curl " << curl_easy_strerror(res) << std::endl;
+        exit(1);
+    }
+    /*std::cout << "size receved: " << chunk.size << std::endl;
+    std::cout << "got: " << chunk.memory << std::endl;*/
+    return chunk;
+}
+
+MemoryStruct getChannelList(std::string key){
+    std::string url;
+    url = "https://www.slack.com/api/channels.list?token=" + key;
 
     CURL *curl = curl_easy_init();
     if (!curl)

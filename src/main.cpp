@@ -1,6 +1,7 @@
 #include "RTMStream.h"
 #include "webAPI.h"
 #include "key.h"
+#include "channelList.h"
 
 #include <iostream>
 #include <fstream>
@@ -26,7 +27,7 @@ std::string getKey()
     }
     std::string key;
     keyFile >> key;
-    std::cout << "they key read is: " << key << std::endl;
+    //std::cout << "they key read is: " << key << std::endl;
     keyFile.close();
     return key;
 }
@@ -34,10 +35,15 @@ std::string getKey()
 
 int main()
 {
+    
     try
     {
+
         //read key from file
         key = getKey();
+
+        parseChannels(getChannelList(key));
+
         //rtm.connect
 
         MemoryStruct chunk = rtmConnect(key);

@@ -46,7 +46,7 @@ websocket::stream<ssl::stream<tcp::socket>> * rtmStreamConnect(std::string webho
 
     // Perform the websocket handshake
     std::string fullPath = webhookURI.path() + "?" + webhookURI.query();
-    std::cout << "full path is: " << fullPath << std::endl;
+    //std::cout << "full path is: " << fullPath << std::endl;
     ws->handshake(webhookURI.host(), fullPath);
     return ws;
 }
