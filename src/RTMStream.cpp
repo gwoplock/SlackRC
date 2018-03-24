@@ -49,6 +49,7 @@ websocket::stream<ssl::stream<tcp::socket>> * rtmStreamConnect(std::string webho
     //std::cout << "full path is: " << fullPath << std::endl;
     ws->handshake(webhookURI.host(), fullPath);
     return ws;
+    //END COPIED
 }
 
 void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
@@ -70,12 +71,6 @@ void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
         boost::property_tree::ptree profPT;
         boost::property_tree::read_json(profileSS, profPT);
         std::string channelID =  pt.get<std::string>("channel");
-        //std::cout << channelID <<std::endl;
-        MemoryStruct channel = getChannel(key, channelID);
-        std::stringstream channelSS;
-        channelSS << channel.memory;
-        boost::property_tree::ptree chanPT;
-         boost::property_tree::read_json(channelSS, chanPT);
         std::cout << "new message: " << text << " by: " << profPT.get<std::string>("profile.display_name_normalized") << " (" << userID << ")" << " in: " 
         << channels[channelID].name()   << std::endl;
     }
