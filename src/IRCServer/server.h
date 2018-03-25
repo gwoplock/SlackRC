@@ -11,6 +11,7 @@
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <iostream>
+#include <vector>
 
 enum IRCCommandCode{
     PASS, NICK, USER, SERVER, OPER, QUIT, SQUIT, JOIN, PART, MODE, TOPIC, NAMES, LIST, INVITE, KICK, VERSION, STATUS, LINKS, TIME, CONNECT, TRACE, ADMIN, INFO, PRIVMSG,
@@ -18,7 +19,9 @@ enum IRCCommandCode{
 };
 
 struct IRCCommand {
-
+    std::string prefix;
+    IRCCommandCode command;
+    std::vector<std::string> params;
 };
 
 class IRCServer
@@ -65,7 +68,7 @@ class IRCServer
         close(_socketFD);
     }
     void handleConnection(int newFD);
-    IRCCommand parseIRCCommand(char message[513]);
+    IRCCommand parseIRCCommand(std::string message);
 };
 
 #endif

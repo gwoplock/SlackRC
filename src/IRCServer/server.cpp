@@ -2,19 +2,33 @@
 #include <string>
 #include <sstream>
 
-
-void IRCServer::handleConnection(int newFD){
+void IRCServer::handleConnection(int newFD)
+{
     bool authed = false;
     bool connectionOpen = true;
-    char buffer[513];
-    std::stringstream commandSS;
-    while (connectionOpen){
-        bzero(buffer, 513);
-        int n = read(newFD, buffer, 513);
-        parseIRCCommand(buffer);
+    char message[513];
+    std::stringstream messageSS;
+    char command[513];
+    while (connectionOpen)
+    {
+        bzero(message, 513);
+        int n = read(newFD, message, 513);
+        messageSS << message;
+        while (!messageSS.eof())
+        {
+            messageSS.getline(command, 513, '\n');
+            if (command[strlen(command) - 1] != '\r'){
+                //incomplete message, break out
+                messageSS << command;
+                break;
+            }
+            parseIRCCommand(command);
+
+        }
     }
 }
 
-IRCCommand IRCServer::parseIRCCommand(char message[513]){
-
+IRCCommand IRCServer::parseIRCCommand(std::string command)
+{
+    std::stringstream commandSS;
 }
