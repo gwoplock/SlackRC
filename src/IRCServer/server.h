@@ -1,6 +1,7 @@
 #ifndef IRC_SERVER_SERVER_H_
 #define IRC_SERVER_SERVER_H_
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +11,15 @@
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <iostream>
+
+enum IRCCommandCode{
+
+};
+
+struct IRCCommand {
+
+};
+
 class IRCServer
 {
   private:
@@ -54,6 +64,7 @@ class IRCServer
         close(_socketFD);
     }
     void handleConnection(int newFD);
+    IRCCommand parseIRCCommand(char message[513]);
 };
 
 #endif
