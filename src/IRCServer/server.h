@@ -1,7 +1,6 @@
 #ifndef IRC_SERVER_SERVER_H_
 #define IRC_SERVER_SERVER_H_
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,17 +11,99 @@
 #include <stdbool.h>
 #include <iostream>
 #include <vector>
+#include <map>
 
-enum IRCCommandCode{
-    PASS, NICK, USER, SERVER, OPER, QUIT, SQUIT, JOIN, PART, MODE, TOPIC, NAMES, LIST, INVITE, KICK, VERSION, STATUS, LINKS, TIME, CONNECT, TRACE, ADMIN, INFO, PRIVMSG,
-    NOTICE, WHO, WHOIS, WHOWAS, KILL, PING, PONG, ERROR, AWAY, REHASH, RESTART, SUMMON, USERS, WALLOPS, USERHOST, ISON, 
+enum IRCCommandCode
+{
+    PASS,
+    NICK,
+    USER,
+    SERVER,
+    OPER,
+    QUIT,
+    SQUIT,
+    JOIN,
+    PART,
+    MODE,
+    TOPIC,
+    NAMES,
+    LIST,
+    INVITE,
+    KICK,
+    VERSION,
+    STATUS,
+    LINKS,
+    TIME,
+    CONNECT,
+    TRACE,
+    ADMIN,
+    INFO,
+    PRIVMSG,
+    NOTICE,
+    WHO,
+    WHOIS,
+    WHOWAS,
+    KILL,
+    PING,
+    PONG,
+    ERROR,
+    AWAY,
+    REHASH,
+    RESTART,
+    SUMMON,
+    USERS,
+    WALLOPS,
+    USERHOST,
+    ISON,
 };
 
-struct IRCCommand {
+struct IRCCommand
+{
     std::string prefix;
     IRCCommandCode command;
     std::vector<std::string> params;
 };
+
+std::map<std::string, IRCCommandCode> stringTOEnum = {{"pass", PASS},
+                                                      {"NICK", NICK},
+                                                      {"USER", USER},
+                                                      {"SERVER", SERVER},
+                                                      {"OPER", OPER}, 
+                                                      {"QUIT", QUIT}, 
+                                                      {"SQUIT", SQUIT}, 
+                                                      {"JOIN", JOIN}, 
+                                                      {"PART", PART}, 
+                                                      {"MODE", MODE}, 
+                                                      {"TOPIC", TOPIC}, 
+                                                      {"NAMES", NAMES}, 
+                                                      {"LIST", LIST}, 
+                                                      {"INVITE", INVITE}, 
+                                                      {"KICK", KICK}, 
+                                                      {"VERSION", VERSION}, 
+                                                      {"STATUS", STATUS}, 
+                                                      {"LINKS", LINKS}, 
+                                                      {"TIME",TIME,},
+                                                      {"CONNECT", CONNECT},
+                                                      {"TRACE", TRACE},
+                                                      {"ADMIN", ADMIN},
+                                                      {"INFO", INFO},
+                                                      {"PRIVMSG", PRIVMSG},
+                                                      {"NOTICE", NOTICE},
+                                                      {"WHO", WHO},
+                                                      {"WHOIS", WHOIS},
+                                                      {"WHOWAS", WHOWAS},
+                                                      {"KILL", KILL},
+                                                      {"PING", PING},
+                                                      {"PONG", PONG},
+                                                      {"ERROR", ERROR},
+                                                      {"AWAY", AWAY},
+                                                      {"REHASH", REHASH},
+                                                      {"RESTART", RESTART},
+                                                      {"SUMMON", SUMMON},
+                                                      {"USERS", USERS},
+                                                      {"WALLOPS", WALLOPS},
+                                                      {"USERHOST", USERHOST},
+                                                      {"ISON", ISON}};
 
 class IRCServer
 {
@@ -47,7 +128,6 @@ class IRCServer
         if (bind(_socketFD, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
         {
             std::cerr << "error binding socket" << std::endl;
-            
         }
     }
     void IRClisten()

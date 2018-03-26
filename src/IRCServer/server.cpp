@@ -31,4 +31,5 @@ void IRCServer::handleConnection(int newFD)
 IRCCommand IRCServer::parseIRCCommand(std::string command)
 {
     std::stringstream commandSS;
+    
 }
