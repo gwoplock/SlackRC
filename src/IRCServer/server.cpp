@@ -17,19 +17,39 @@ void IRCServer::handleConnection(int newFD)
         while (!messageSS.eof())
         {
             messageSS.getline(command, 513, '\n');
-            if (command[strlen(command) - 1] != '\r'){
+            if (command[strlen(command) - 1] != '\r')
+            {
                 //incomplete message, break out
                 messageSS << command;
                 break;
             }
             parseIRCCommand(command);
-
         }
     }
 }
 
 IRCCommand IRCServer::parseIRCCommand(std::string command)
 {
+    IRCCommand toRet;
     std::stringstream commandSS;
-    
+    commandSS << command;
+    if (commandSS.peek() == ':')
+    {
+        commandSS >> toRet.prefix;
+    }
+    std::string temp;
+    commandSS >> temp;
+    toRet.command = stringTOEnum[temp];
+    while (!commandSS.eof())
+    {
+        if (commandSS.peek() == ':')
+        {
+            toRet.params.push_back(commandSS.str());
+            break;
+        } else {
+            commandSS >> temp;
+            toRet.params.push_back(temp);
+        }
+    }
+    return toRet;
 }
