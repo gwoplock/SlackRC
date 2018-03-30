@@ -5,6 +5,7 @@
 void runPassCmd(IRCCommand command, int fd);
 void runNickCmd(IRCCommand command, int fd, std::string &nick);
 void runUserCmd(IRCCommand command, int fd);
+void runQuitCmd(IRCCommand command, int fd);
 void IRCServer::handleConnection(int newFD)
 {
     bool authed = false;
@@ -42,6 +43,10 @@ void IRCServer::handleConnection(int newFD)
             case USER:
             {
                 runUserCmd(parsedCommand, newFD);
+            }
+            case QUIT:
+            {
+                runQuitCmd(parsedCommand, newFD);
             }
             }
         }
@@ -98,4 +103,10 @@ void runNickCmd(IRCCommand command, int fd, std::string &nick)
 void runUserCmd(IRCCommand command, int fd)
 {
     //i dont think i need this for what im doing
+}
+
+void runQuitCmd(IRCCommand, int fd)
+{
+    shutdown(fd, SHUT_WR);
+    close(fd);
 }
