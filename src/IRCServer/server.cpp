@@ -1,4 +1,5 @@
 #include "server.h"
+#include "../key.h"
 #include <string>
 #include <sstream>
 
@@ -6,10 +7,12 @@ void runPassCmd(IRCCommand command, int fd);
 void runNickCmd(IRCCommand command, int fd, std::string &nick);
 void runUserCmd(IRCCommand command, int fd);
 void runQuitCmd(IRCCommand command, int fd);
+void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> & joined);
 void IRCServer::handleConnection(int newFD)
 {
     bool authed = false;
     std::string nick;
+    std::vector<std::string> joined;
     bool connectionOpen = true;
     char message[513];
     std::stringstream messageSS;
@@ -47,6 +50,10 @@ void IRCServer::handleConnection(int newFD)
             case QUIT:
             {
                 runQuitCmd(parsedCommand, newFD);
+            }
+            case JOIN:
+            {
+                runJoinCmd(parsedCommand, newFD, joined);
             }
             }
         }
@@ -109,4 +116,22 @@ void runQuitCmd(IRCCommand, int fd)
 {
     shutdown(fd, SHUT_WR);
     close(fd);
+}
+
+void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> & joined){
+    if (command.params.size() > 1){
+        //error  ERR_NEEDMOREPARAMS
+    } else {
+        for (auto i : command.params){
+            if (auto channel = channels.find(i) == channels.end()){
+                //error ERR_NOSUCHCHANNEL
+            }
+            else {
+                joined.push_back(i);
+                /*If a JOIN is successful, the user is then sent the channel's topic
+                (using RPL_TOPIC) and the list of users who are on the channel (using
+                RPL_NAMREPLY), which must include the user joining.*/
+            }
+        }
+    }
 }
