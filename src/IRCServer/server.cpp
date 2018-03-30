@@ -7,7 +7,9 @@ void runPassCmd(IRCCommand command, int fd);
 void runNickCmd(IRCCommand command, int fd, std::string &nick);
 void runUserCmd(IRCCommand command, int fd);
 void runQuitCmd(IRCCommand command, int fd);
-void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> & joined);
+void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> &joined);
+void runPartCmd(IRCCommand command, int fd, std::vector<std::string> &joined);
+void runPrivMsgCmd(IRCCommand command, int fd);
 void IRCServer::handleConnection(int newFD)
 {
     bool authed = false;
@@ -54,6 +56,13 @@ void IRCServer::handleConnection(int newFD)
             case JOIN:
             {
                 runJoinCmd(parsedCommand, newFD, joined);
+            }
+            case PART:
+            {
+                runPartCmd(parsedCommand, newFD, joined);
+            }
+            case PRIVMSG:{
+                runPrivMsgCmd(parsedCommand, newFD);
             }
             }
         }
@@ -118,20 +127,57 @@ void runQuitCmd(IRCCommand, int fd)
     close(fd);
 }
 
-void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> & joined){
-    if (command.params.size() > 1){
+void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> &joined)
+{
+    if (command.params.size() > 1)
+    {
         //error  ERR_NEEDMOREPARAMS
-    } else {
-        for (auto i : command.params){
-            if (auto channel = channels.find(i) == channels.end()){
+    }
+    else
+    {
+        for (auto i : command.params)
+        {
+            if (auto channel = channels.find(i) == channels.end())
+            {
                 //error ERR_NOSUCHCHANNEL
             }
-            else {
+            else
+            {
                 joined.push_back(i);
                 /*If a JOIN is successful, the user is then sent the channel's topic
                 (using RPL_TOPIC) and the list of users who are on the channel (using
                 RPL_NAMREPLY), which must include the user joining.*/
             }
         }
+    }
+}
+void runPartCmd(IRCCommand command, int fd, std::vector<std::string> &joined)
+{
+    if (command.params.size() > 1)
+    {
+        //error  ERR_NEEDMOREPARAMS
+    }
+    else
+    {
+        for (auto i : command.params)
+        {
+            bool found = false;
+            for (int k = 0; k < joined.size(); k++)
+            {
+                if (joined[k] == i)
+                {
+                    joined.erase(joined.begin() + k);
+                }
+            }
+        }
+    }
+}
+
+void runPrivMsgCmd(IRCCommand command, int fd){
+    if (command.params.end()[0] != ':'){
+        //ERR_NOTEXTTOSEND
+    }
+    if (command.params.size() < 2){
+        //ERR_NORECIPIENT
     }
 }

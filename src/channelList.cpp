@@ -16,7 +16,7 @@ std::map<std::string, Channel> parseChannels(MemoryStruct channelList)
     {
         for (auto &property : array_element.second)
         {
-            std::cout << property.second.get<std::string>("name") << std::endl;
+            std::cout << "#" << property.second.get<std::string>("name") << std::endl;
             toRet.emplace(property.second.get<std::string>("id"), Channel(property.second));
         }
     }
