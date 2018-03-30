@@ -13,6 +13,10 @@
 #include <vector>
 #include <map>
 
+//TODO return values
+#define ERR_NEEDMOREPARAMS "1"
+#define ERR_NONICKNAMEGIVEN "2"
+
 enum IRCCommandCode
 {
     PASS,

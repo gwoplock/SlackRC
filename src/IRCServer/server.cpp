@@ -2,9 +2,13 @@
 #include <string>
 #include <sstream>
 
+void runPassCmd(IRCCommand command, int fd);
+void runNickCmd(IRCCommand command, int fd, std::string &nick);
+
 void IRCServer::handleConnection(int newFD)
 {
     bool authed = false;
+    std::string nick;
     bool connectionOpen = true;
     char message[513];
     std::stringstream messageSS;
@@ -23,7 +27,19 @@ void IRCServer::handleConnection(int newFD)
                 messageSS << command;
                 break;
             }
-            parseIRCCommand(command);
+            auto parsedCommand = parseIRCCommand(command);
+            switch (parsedCommand.command)
+            {
+            case PASS:
+            {
+                runPassCmd(parsedCommand, newFD);
+                break;
+            }
+            case NICK:
+            {
+                runNickCmd(parsedCommand, newFD, nick);
+            }
+            }
         }
     }
 }
@@ -46,10 +62,32 @@ IRCCommand IRCServer::parseIRCCommand(std::string command)
         {
             toRet.params.push_back(commandSS.str());
             break;
-        } else {
+        }
+        else
+        {
             commandSS >> temp;
             toRet.params.push_back(temp);
         }
     }
     return toRet;
+}
+
+void runPassCmd(IRCCommand command, int fd)
+{
+    if (command.params.size() != 1)
+    {
+        write(fd, ERR_NEEDMOREPARAMS, strlen(ERR_NEEDMOREPARAMS));
+    }
+}
+
+void runNickCmd(IRCCommand command, int fd, std::string &nick)
+{
+    if (command.params.size() != 1 || command.params.size() != 2)
+    {
+        write(fd, ERR_NONICKNAMEGIVEN, strlen(ERR_NONICKNAMEGIVEN));
+    }
+    else
+    {
+        nick = command.params.at(0);
+    }
 }
