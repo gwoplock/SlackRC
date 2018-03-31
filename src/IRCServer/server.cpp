@@ -61,7 +61,8 @@ void IRCServer::handleConnection(int newFD)
             {
                 runPartCmd(parsedCommand, newFD, joined);
             }
-            case PRIVMSG:{
+            case PRIVMSG:
+            {
                 runPrivMsgCmd(parsedCommand, newFD);
             }
             }
@@ -137,16 +138,12 @@ void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> &joined)
     {
         for (auto i : command.params)
         {
-            if (auto channel = channels.find(i) == channels.end())
+            for (auto it = channels.begin(); it != channels.end(); ++it)
             {
-                //error ERR_NOSUCHCHANNEL
-            }
-            else
-            {
-                joined.push_back(i);
-                /*If a JOIN is successful, the user is then sent the channel's topic
-                (using RPL_TOPIC) and the list of users who are on the channel (using
-                RPL_NAMREPLY), which must include the user joining.*/
+                if ("#" + it->second.name() == i || "&" + it->second.name() == i)
+                {
+                    joined.push_back(it->first);
+                }
             }
         }
     }
@@ -173,11 +170,18 @@ void runPartCmd(IRCCommand command, int fd, std::vector<std::string> &joined)
     }
 }
 
-void runPrivMsgCmd(IRCCommand command, int fd){
-    if (command.params.end()[0] != ':'){
+void runPrivMsgCmd(IRCCommand command, int fd)
+{
+    if (command.params.end()[0] != ":")
+    {
         //ERR_NOTEXTTOSEND
     }
-    if (command.params.size() < 2){
+    if (command.params.size() < 2)
+    {
         //ERR_NORECIPIENT
+    }
+    for (int i = 0; i < command.params.size() - 1; i++)
+    {
+        
     }
 }

@@ -18,6 +18,7 @@ std::map<std::string,Channel> channels;
 std::map<std::string, User> users;
 std::string key;
 websocket::stream<ssl::stream<tcp::socket>> *ws;
+int currentID;
 
 std::string getKey()
 {
@@ -40,6 +41,7 @@ std::string getKey()
 
 int main()
 {
+    currentID =0;
     
     try
     {

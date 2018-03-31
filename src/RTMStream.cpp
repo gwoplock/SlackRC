@@ -67,7 +67,7 @@ void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
         std::string userID = pt.get<std::string>("user");
         std::string channelID =  pt.get<std::string>("channel");
         std::cout << "new message: " << text << " by: " << users[userID].name() << " (" << userID << ")" << " in: " 
-        << channels[channelID].name()   << std::endl;
+        << channels["#" + channelID].name()   << std::endl;
     }
     if (pt.get<std::string>("type") == "hello")
     {

@@ -11,4 +11,5 @@ extern std::string key;
 extern std::map<std::string, Channel> channels;
 extern std::map<std::string, User> users;
 extern boost::beast::websocket::stream<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> *ws;
+extern int currentID;
 #endif
