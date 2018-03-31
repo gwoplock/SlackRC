@@ -18,6 +18,7 @@ cd cpp-netlib-0.12.0-final && cp -R boost /usr/local/include && cd ..
 #add src files
 ADD src/ SlackRC/src/
 ADD CMakeLists.txt SlackRC
+ADD SlackToken .
 
 #build
 RUN cd SlackRC && mkdir Build && cd Build && cmake .. && make
@@ -25,7 +26,7 @@ RUN cd SlackRC && mkdir Build && cd Build && cmake .. && make
 #expose IRC server
 EXPOSE 6667
 
-CMD ["SlackRC"]
+CMD ["SlackRC/Build/SlackRC"]
 
 
 
