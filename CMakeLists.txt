@@ -19,7 +19,7 @@ find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
 #boost stuffs
-FIND_PACKAGE( Boost 1.66.0 COMPONENTS system REQUIRED )
+FIND_PACKAGE( Boost 1.60.0 COMPONENTS system REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 
