@@ -150,13 +150,19 @@ IRCCommand IRCServer::parseIRCCommand(std::string command)
         commandSS >> toRet.prefix;
     }
     std::string temp;
+    char tempArr[513];
     commandSS >> temp;
     toRet.command = stringTOEnum[temp];
     while (!commandSS.eof())
     {
+        commandSS.ignore();
         if (commandSS.peek() == ':')
         {
-            toRet.params.push_back(commandSS.str());
+            std::cout << "in : block" << std::endl;
+            commandSS.getline(tempArr, 512, EOF);
+            std::cout << "tempAr = " << tempArr <<std::endl;
+            toRet.params.push_back(tempArr);
+            toRet.params.push_back(tempArr);
             break;
         }
         else
@@ -258,6 +264,7 @@ void runPrivMsgCmd(IRCCommand command, int fd)
         std::cout << "no recip" << std::endl;
         return;
     }
+    std::stringstream output;
     for (int i = 0; i < command.params.size() - 1; i++)
     {
         std::cout << "loop out" << std::endl;
@@ -272,7 +279,9 @@ void runPrivMsgCmd(IRCCommand command, int fd)
                 pt.put("type", "message");
                 pt.put("channel", it->first);
                 pt.put("text", (*(command.params.end() - 1)).c_str() + 1);
-                boost::property_tree::write_json(std::cout, pt);
+                boost::property_tree::write_json(output, pt);
+                std::cout << output.str() << std::endl;
+                ws->write(boost::asio::buffer(std::string(output.str())));
             }
         }
     }
