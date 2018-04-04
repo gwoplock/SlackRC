@@ -2,7 +2,7 @@
 #include "webAPI.h"
 #include "key.h"
 #include "channelList.h"
-
+#include "IRCServer/server.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -22,7 +22,7 @@ int currentID;
 
 std::string getKey()
 {
-
+    
     std::ifstream keyFile;
     //todo take file from cmd line
     keyFile.open("SlackToken");
@@ -63,7 +63,11 @@ int main()
         std::string webhookURL = getRTMURL(jsonSS);
 
         ws = rtmStreamConnect(webhookURL);
+        //Test code
+        IRCServer server;
+        server.IRClisten();
 
+        //end test code
         while (true)
         {
             readMessage(ws);

@@ -78,6 +78,7 @@ MemoryStruct rtmConnect(std::string key)
 
 std::string getRTMURL(std::stringstream *jsonSS)
 {
+    std::cout << jsonSS->str() << std::endl;
     boost::property_tree::ptree pt;
     boost::property_tree::read_json(*jsonSS, pt);
     std::string webhookURL = pt.get<std::string>("url");

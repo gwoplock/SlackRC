@@ -17,9 +17,6 @@ class Channel {
         std::string name(){
             return _name;
         }
-        std::string id(){
-            
-        }
 };
 
 #endif
