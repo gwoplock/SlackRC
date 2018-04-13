@@ -7,22 +7,22 @@
 #include <fstream>
 #include <string>
 
-
 //NOTE: copied from "http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp"
 using tcp = boost::asio::ip::tcp;              // from <boost/asio/ip/tcp.hpp>
 namespace websocket = boost::beast::websocket; // from <boost/beast/websocket.hpp>
 namespace ssl = boost::asio::ssl;              // from <boost/asio/ssl.hpp>
 //END copied
 
-std::map<std::string,Channel> channels;
+std::map<std::string, Channel> channels;
 std::map<std::string, User> users;
 std::string key;
 websocket::stream<ssl::stream<tcp::socket>> *ws;
 int currentID;
+IRCServer server;
 
 std::string getKey()
 {
-    
+
     std::ifstream keyFile;
     //todo take file from cmd line
     keyFile.open("SlackToken");
@@ -38,11 +38,10 @@ std::string getKey()
     return key;
 }
 
-
 int main()
 {
-    currentID =0;
-    
+    currentID = 0;
+
     try
     {
 
@@ -63,14 +62,21 @@ int main()
         std::string webhookURL = getRTMURL(jsonSS);
 
         ws = rtmStreamConnect(webhookURL);
-        //Test code
-        IRCServer server;
-        server.IRClisten();
-
-        //end test code
-        while (true)
+        pid_t pid = fork();
+        if (pid < 0)
         {
-            readMessage(ws);
+            //error
+        }
+        else if (pid > 0)
+        {   
+            server.IRClisten();
+        }
+        else
+        {
+            while (true)
+            {
+                readMessage(ws);
+            }
         }
 
         ws->close(websocket::close_code::normal);

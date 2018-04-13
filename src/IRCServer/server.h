@@ -12,10 +12,9 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include "../channel.h"
+#include "../user.h"
 
-//TODO return values
-#define ERR_NEEDMOREPARAMS "1"
-#define ERR_NONICKNAMEGIVEN "2"
 
 enum IRCCommandCode
 {
@@ -76,7 +75,7 @@ class IRCServer
     const int _PORT = 6667;
     struct sockaddr_in _cli_addr;
     socklen_t cli_len = sizeof(_cli_addr);
-
+    int clientFD;
   public:
     IRCServer()
     {
@@ -113,6 +112,7 @@ class IRCServer
     }
     void handleConnection(int newFD);
     IRCCommand parseIRCCommand(std::string message);
+    void send(std::string message, Channel channel, User from);
 };
 
 #endif
