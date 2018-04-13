@@ -13,6 +13,9 @@ private:
         std::string name(){
             return _name;
         }
+        bool deleted(){
+            return _pt.get<bool>("deleted");
+        }
 
 };
 

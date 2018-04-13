@@ -18,8 +18,13 @@ Channel::Channel(boost::property_tree::ptree pt)
 
             if (property.first == "")
             {
-                _users[i] = users[property.second.get_value<std::string>()];
-                i++;
+                std::cout << "finding uid " << property.second.get_value<std::string>() << std::endl;
+                auto temp = users[property.second.get_value<std::string>()];
+                std::cout << temp.name() <<std::endl;
+                if (!temp.deleted()){
+                    _users[i] = temp;
+                    i++;
+                }
 
             }
         }

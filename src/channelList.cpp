@@ -34,7 +34,7 @@ std::map<std::string, User> parseUsers(MemoryStruct userList)
     {
         for (auto &property : array_element.second)
         {
-            std::cout << property.second.get<std::string>("profile.display_name_normalized") << std::endl;
+            std::cout << property.second.get<std::string>("id") << " = " <<property.second.get<std::string>("profile.display_name_normalized") << std::endl;
             toRet.emplace(property.second.get<std::string>("id"), User(property.second));
         }
     }

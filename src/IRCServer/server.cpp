@@ -252,12 +252,6 @@ void runPrivMsgCmd(IRCCommand command, int fd)
 {
     std::cout << "got priv msg" << std::endl;
     std::cout << *(command.params.end() - 1) << std::endl;
-    if ((*(command.params.end() - 1))[0] != ':')
-    {
-        //ERR_NOTEXTTOSEND
-        std::cout << "nothing to send" << std::endl;
-        return;
-    }
     if (command.params.size() < 2)
     {
         //ERR_NORECIPIENT
