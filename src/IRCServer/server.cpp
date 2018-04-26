@@ -7,7 +7,6 @@
 #define ERR_NEEDMOREPARAMS "1"
 #define ERR_NONICKNAMEGIVEN "2"
 
-
 std::map<std::string, IRCCommandCode> stringTOEnum = {{"pass", PASS},
 													  {"NICK", NICK},
 													  {"USER", USER},
@@ -59,6 +58,8 @@ void runQuitCmd(IRCCommand command, int fd, bool &connectionOpen);
 void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> &joined);
 void runPartCmd(IRCCommand command, int fd, std::vector<std::string> &joined);
 void runPrivMsgCmd(IRCCommand command, int fd);
+void runTopicCmd(IRCCommand command, int fd);
+
 void IRCServer::handleConnection(int newFD)
 {
 	clientFD = newFD;
@@ -82,15 +83,9 @@ void IRCServer::handleConnection(int newFD)
 			if (command[strlen(command) - 1] != '\r')
 			{
 				//incomplete message, break out
-				messageSS << command;
 				break;
 			}
 			auto parsedCommand = parseIRCCommand(command);
-			for (auto i : parsedCommand.params)
-			{
-				std::cout << i << ", ";
-			}
-			std::cout << std::endl;
 			switch (parsedCommand.command)
 			{
 			case PASS:
@@ -126,6 +121,11 @@ void IRCServer::handleConnection(int newFD)
 			case PRIVMSG:
 			{
 				runPrivMsgCmd(parsedCommand, newFD);
+				break;
+			}
+			case TOPIC:
+			{
+				runTopicCmd(parsedCommand, newFD);
 				break;
 			}
 			default:
@@ -220,7 +220,21 @@ void runJoinCmd(IRCCommand command, int fd, std::vector<std::string> &joined)
 			{
 				if ("#" + it->second.name() == i || "&" + it->second.name() == i)
 				{
+					std::cout << "joining: " << it->second.name() << std::endl;
 					joined.push_back(it->first);
+					//send topic
+					write(fd, "332 ", 4);
+					write(fd, it->second.name().c_str(), it->second.name().length());
+					write(fd, " :", 2);
+					write(fd, it->second.topic().c_str(), it->second.topic().length());
+					write(fd, "\r\n", 2);
+					//send members list
+					write(fd, "353 ", 4);
+					write(fd, it->second.name().c_str(), it->second.name().length());
+					write(fd, " :", 2);
+					write(fd, "+gwoplock ", strlen("+gwoplock "));
+					write(fd, "\r\n", 2);
+
 				}
 			}
 		}
@@ -250,7 +264,7 @@ void runPartCmd(IRCCommand command, int fd, std::vector<std::string> &joined)
 
 void runPrivMsgCmd(IRCCommand command, int fd)
 {
-	std::cout << *(command.params.end() - 1) << std::endl;
+
 	if (command.params.size() < 2)
 	{
 		//ERR_NORECIPIENT
@@ -271,19 +285,35 @@ void runPrivMsgCmd(IRCCommand command, int fd)
 				pt.put("channel", it->first);
 				pt.put("text", (*(command.params.end() - 1)).c_str() + 1);
 				boost::property_tree::write_json(output, pt);
-				std::cout << output.str() << std::endl;
 				ws->write(boost::asio::buffer(std::string(output.str())));
 			}
 		}
 	}
 }
 
+void runTopicCmd(IRCCommand command, int fd)
+{
+	for (auto it = channels.begin(); it != channels.end(); ++it)
+		{
+			if ("#" + it->second.name() == command.params[0] ||
+				"&" + it->second.name() == command.params[0])
+			{
+				
+				//write(clientFD, RPL_TOPIC);
+				//write(clientFD, it->second.topic().c_str();
+			}
+		}
+}
+
 void IRCServer::send(std::string message, Channel channel, User from)
 {
+	std::cout << "sending to IRC" << std::endl;
 	write(clientFD, ":", 1);
 	write(clientFD, from.name().c_str(), from.name().length());
 	write(clientFD, " /privmsg #", strlen(" /privmsg #"));
 	write(clientFD, channel.name().c_str(), channel.name().length());
 	write(clientFD, " :", 2);
 	write(clientFD, message.c_str(), message.length());
+	write(clientFD, "\r\n", 2);
+	std::cout << ":" << from.name().c_str() << " /privmsg #" << channel.name().c_str() << " :" << message.c_str() << "\r\n";
 }

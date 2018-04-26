@@ -18,9 +18,7 @@ Channel::Channel(boost::property_tree::ptree pt)
 
             if (property.first == "")
             {
-                std::cout << "finding uid " << property.second.get_value<std::string>() << std::endl;
                 auto temp = users[property.second.get_value<std::string>()];
-                std::cout << temp.name() <<std::endl;
                 if (!temp.deleted()){
                     _users[i] = temp;
                     i++;
@@ -29,8 +27,4 @@ Channel::Channel(boost::property_tree::ptree pt)
             }
         }
     }
-    for (int i =0; i < _userCount; i++) {
-        std::cout << _users[i].name() << ", ";
-    }
-    std::cout<<std::endl;
 }

@@ -17,6 +17,12 @@ class Channel {
         std::string name(){
             return _name;
         }
+        std::string topic(){
+            auto temp = _pt.get_optional<std::string>("topic.value");
+            if (temp){
+                return *temp;
+            }
+        }
 };
 
 #endif

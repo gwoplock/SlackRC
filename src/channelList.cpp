@@ -16,7 +16,6 @@ std::map<std::string, Channel> parseChannels(MemoryStruct channelList)
     {
         for (auto &property : array_element.second)
         {
-            std::cout << "#" << property.second.get<std::string>("name") << std::endl;
             toRet.emplace(property.second.get<std::string>("id"), Channel(property.second));
         }
     }
@@ -34,7 +33,6 @@ std::map<std::string, User> parseUsers(MemoryStruct userList)
     {
         for (auto &property : array_element.second)
         {
-            std::cout << property.second.get<std::string>("id") << " = " <<property.second.get<std::string>("profile.display_name_normalized") << std::endl;
             toRet.emplace(property.second.get<std::string>("id"), User(property.second));
         }
     }

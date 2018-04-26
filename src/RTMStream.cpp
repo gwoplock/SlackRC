@@ -10,11 +10,14 @@
 #include <boost/network/uri.hpp>
 #include <boost/network/uri/uri.ipp>
 
+#include <boost/optional.hpp>
+
+
 using tcp = boost::asio::ip::tcp;              // from <boost/asio/ip/tcp.hpp>
 namespace websocket = boost::beast::websocket; // from <boost/beast/websocket.hpp>
 namespace ssl = boost::asio::ssl;              // from <boost/asio/ssl.hpp>
 
-websocket::stream<ssl::stream<tcp::socket>> * rtmStreamConnect(std::string webhookURL)
+websocket::stream<ssl::stream<tcp::socket>> *rtmStreamConnect(std::string webhookURL)
 {
     boost::network::uri::uri webhookURI(webhookURL);
 
@@ -59,19 +62,27 @@ void readMessage(websocket::stream<ssl::stream<tcp::socket>> *ws)
     ws->read(b);
     std::stringstream message;
     message << boost::beast::buffers(b.data());
+    std::cout << message.str() << std::endl;
     boost::property_tree::ptree pt;
     boost::property_tree::read_json(message, pt);
-    if (pt.get<std::string>("type") == "message")
+    auto temp = pt.get_optional<std::string>("type");
+    if (temp)
     {
-        std::string text = pt.get<std::string>("text");
-        std::string userID = pt.get<std::string>("user");
-        std::string channelID =  pt.get<std::string>("channel");
-        std::cout << "new message: " << text << " by: " << users[userID].name() << " (" << userID << ")" << " in: " 
-        << channels[channelID].name()   << std::endl;
-        server.send(text, channels[channelID], users[userID]);
-    }
-    if (pt.get<std::string>("type") == "hello")
-    {
-        std::cout << "hello receved" << std::endl;
+        auto type = *temp;
+        if (type == "message")
+        {
+            std::string text = pt.get<std::string>("text");
+            std::string userID = pt.get<std::string>("user");
+            std::string channelID = pt.get<std::string>("channel");
+            std::cout << "new message: " << text << " by: " << users[userID].name() << " (" << userID << ")"
+                      << " in: "
+                      << channels[channelID].name() << std::endl;
+            std::cout << "sending from WS" << std::endl;
+            server.send(text, channels[channelID], users[userID]);
+        }
+        if (type == "hello")
+        {
+            std::cout << "hello receved" << std::endl;
+        }
     }
 }

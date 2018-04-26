@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <pthread.h>
 
 //NOTE: copied from "http://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/sync-ssl/websocket_client_sync_ssl.cpp"
 using tcp = boost::asio::ip::tcp;              // from <boost/asio/ip/tcp.hpp>
@@ -38,6 +39,21 @@ std::string getKey()
     return key;
 }
 
+void *pthreadIRCServe(void *args)
+{
+    server.IRClisten();
+    return nullptr;
+}
+
+void *ptreadWebsocket(void *args)
+{
+    while (true)
+    {
+        readMessage(ws);
+    }
+    return nullptr;
+}
+
 int main()
 {
     currentID = 0;
@@ -62,22 +78,15 @@ int main()
         std::string webhookURL = getRTMURL(jsonSS);
 
         ws = rtmStreamConnect(webhookURL);
-        pid_t pid = fork();
-        if (pid < 0)
-        {
-            //error
-        }
-        else if (pid > 0)
-        {   
-            server.IRClisten();
-        }
-        else
-        {
-            while (true)
-            {
-                readMessage(ws);
-            }
-        }
+
+        pthread_t IRCThread, webSocketThread;
+
+        pthread_create(&IRCThread, nullptr, pthreadIRCServe, nullptr);
+        pthread_create(&webSocketThread, nullptr, ptreadWebsocket, nullptr);
+
+        //TODO kill both thread when one exits
+        pthread_join(webSocketThread, nullptr);
+        pthread_join(IRCThread, nullptr);
 
         ws->close(websocket::close_code::normal);
     }
